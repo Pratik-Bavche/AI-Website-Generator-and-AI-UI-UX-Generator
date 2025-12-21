@@ -53,7 +53,33 @@ export async function POST(req: NextRequest) {
     // Construct the API URL - Google OpenAI-compatible endpoint uses Bearer token auth
     const apiUrl = `${baseUrl.replace(/\/$/, '')}/chat/completions`;
 
-    const response = await fetch(apiUrl, {
+    // Helper: fetch with simple retry/backoff on 429 or transient server errors
+    async function fetchWithRetries(url: string, opts: RequestInit, maxRetries = 3) {
+      for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+          const res = await fetch(url, opts);
+          if (res.status === 429 || (res.status >= 500 && res.status < 600)) {
+            // If last attempt, return the response so caller can handle it
+            if (attempt === maxRetries - 1) return res;
+            const delay = 500 * Math.pow(2, attempt); // 500ms, 1000ms, 2000ms...
+            console.warn(`Request returned ${res.status}. Retrying after ${delay}ms (attempt ${attempt + 1})`);
+            await new Promise((r) => setTimeout(r, delay));
+            continue;
+          }
+          return res;
+        } catch (err) {
+          // network error - retry unless last attempt
+          if (attempt === maxRetries - 1) throw err;
+          const delay = 500 * Math.pow(2, attempt);
+          console.warn(`Network error during fetch; retrying after ${delay}ms (attempt ${attempt + 1})`, err);
+          await new Promise((r) => setTimeout(r, delay));
+        }
+      }
+      // Shouldn't reach here
+      throw new Error('Failed to fetch after retries');
+    }
+
+    const response = await fetchWithRetries(apiUrl, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${trimmedKey}`,
@@ -64,7 +90,7 @@ export async function POST(req: NextRequest) {
         messages,
         stream: true,
       }),
-    });
+    }, 3);
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => "Unknown error");
@@ -105,6 +131,14 @@ This often happens when:
 ACTION REQUIRED:
 - If this is on Vercel: Go to Settings > Environment Variables and ensure OPENAI_API_KEY is set to the correct key starting with "AIza".
 - If this is local: Check your .env.local file.`;
+        } else if (response.status === 429) {
+          errorMessage = `Quota Exceeded (429): ${errorMessage}.
+           
+The API key has exceeded its rate limit or quota.
+- If you are on the free tier, you may have made too many requests in a short time.
+- If you are paying, check your quota limits in Google Cloud Console.
+
+Suggested Action: Wait a minute and try again.`;
         }
       } catch {
         if (errorText && errorText !== "Unknown error") {
