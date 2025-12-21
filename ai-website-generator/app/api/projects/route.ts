@@ -4,6 +4,9 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
+//it fetch the current user using currentUser from clerk
+//if it exists it creates a new project, frame and chat message in the database
+//if not create new user with default credits
 export async function POST(req:NextRequest) {
     try {
         const {projectId,frameId,messages,credits}=await req.json();
