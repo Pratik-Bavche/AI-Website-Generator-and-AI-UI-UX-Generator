@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
 
     const apiKey = process.env.OPENAI_API_KEY;
     const baseUrl = process.env.OPENAI_BASE_URL || "https://generativelanguage.googleapis.com/v1beta/openai/";
-    const model = process.env.OPENAI_MODEL || "gemini-2.0-flash";
+    const model = process.env.OPENAI_MODEL || "gemini-2.5-flash";
 
     // Debug: Log all available env vars that start with OPENAI (without exposing values)
     const envDebug = Object.keys(process.env)
@@ -114,6 +114,10 @@ export async function POST(req: NextRequest) {
 
         // Provide helpful error messages
         if (response.status === 401) {
+          console.error("DEBUG: 401 Error Details", {
+            headers: Object.fromEntries(response.headers.entries()),
+            keyUsed: maskedKey
+          });
           errorMessage = `Authentication failed: ${errorMessage}. This usually means:
 1. Your API key is invalid or expired
 2. Your API key doesn't have proper permissions
@@ -121,6 +125,10 @@ export async function POST(req: NextRequest) {
 
 Please verify your OPENAI_API_KEY in .env.local file and ensure it's a valid Google API key.`;
         } else if (response.status === 403) {
+          console.error("DEBUG: 403 Error Details", {
+            headers: Object.fromEntries(response.headers.entries()),
+            keyUsed: maskedKey
+          });
           errorMessage = `Permission Denied (403): ${errorMessage}.
           
 This often happens when:
@@ -139,6 +147,11 @@ The API key has exceeded its rate limit or quota.
 - If you are paying, check your quota limits in Google Cloud Console.
 
 Suggested Action: Wait a minute and try again.`;
+        } else {
+          console.error("DEBUG: Other Error Details", {
+            status: response.status,
+            headers: Object.fromEntries(response.headers.entries())
+          });
         }
       } catch {
         if (errorText && errorText !== "Unknown error") {

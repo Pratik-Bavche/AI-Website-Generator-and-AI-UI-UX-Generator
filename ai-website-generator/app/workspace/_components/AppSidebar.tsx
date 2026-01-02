@@ -25,12 +25,12 @@ export function AppSidebar() {
   const [projectList, setProjectList] = useState<any[]>([]);
   const { userDetail } = useContext(UserDetailContext);
   const [loading, setLoading] = useState(false);
-  const {has}=useAuth();
+  const { has } = useAuth();
   useEffect(() => {
     GetProjectList();
-  }, []); 
+  }, []);
 
-  const hasUnlimitedAccess = has&&has({ plan: 'unlimited' })
+  const hasUnlimitedAccess = has && has({ plan: 'unlimited' })
 
   const GetProjectList = async () => {
     try {
@@ -76,43 +76,43 @@ export function AppSidebar() {
           <div>
             {!loading && projectList.length > 0
               ? projectList.map((item, index) => {
-                  const title =
-                    item?.chats?.[0]?.chatMessage?.[0]?.content || "Untitled";
-                  return (
-                    <Link
-                      href={`/playground/${item.projectId}?frameId=${item.frameId}`}
-                      key={index}
-                      className="my-2 hover:bg-secondary p-2 rounded-lg cursor-pointer block"
-                    >
-                      <h2 className="line-clamp-1">{title}</h2>
-                    </Link>
-                  );
-                })
-              : [1, 2, 3, 4, 5].map((_, index) => (
-                  <Skeleton
+                const title =
+                  item?.chats?.[0]?.chatMessage?.[0]?.content || "Untitled";
+                return (
+                  <Link
+                    href={`/playground/${item.projectId}?frameId=${item.frameId}`}
                     key={index}
-                    className="w-full h-10 rounded-lg m-2"
-                  />
-                ))}
+                    className="my-2 hover:bg-secondary p-2 rounded-lg cursor-pointer block"
+                  >
+                    <h2 className="line-clamp-1">{title}</h2>
+                  </Link>
+                );
+              })
+              : [1, 2, 3, 4, 5].map((_, index) => (
+                <Skeleton
+                  key={index}
+                  className="w-full h-10 rounded-lg m-2"
+                />
+              ))}
           </div>
         </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter>
-       {!hasUnlimitedAccess && <div className="p-3 border rounded-xl space-y-3 bg-secondary">
+        {!hasUnlimitedAccess && <div className="p-3 border rounded-xl space-y-3 bg-secondary">
           <h2 className="flex justify-between items-center">
             Remaining credits:
             <span className="font-bold">{userDetail?.credits ?? 0}</span>
           </h2>
 
-          <Progress value={(userDetail?.credits/2)*100} />
+          <Progress value={(userDetail?.credits / 2) * 100} />
           <Link href={'/workspace/pricing'} className="w-full">
-          <Button className="w-full cursor-pointer">Upgrade to Unlimited</Button>
+            <Button className="w-full cursor-pointer">Upgrade to Unlimited</Button>
           </Link>
         </div>}
 
         <div className="mt-1 flex items-center gap-2">
-          <UserButton />
+          <UserButton showName afterSignOutUrl="/sign-in" />
           <Button variant="ghost" className="cursor-pointer">
             Settings
           </Button>

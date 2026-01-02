@@ -5,8 +5,8 @@ import React from 'react';
 const AppHeader = () => {
   return (
     <div className='flex justify-between items-center p-4 shadow cursor-pointer'>
-      <SidebarTrigger className='cursor-pointer'/>
-      <UserButton />
+      <SidebarTrigger className='cursor-pointer' />
+      <UserButton afterSignOutUrl="/sign-in" />
     </div>
   );
 }

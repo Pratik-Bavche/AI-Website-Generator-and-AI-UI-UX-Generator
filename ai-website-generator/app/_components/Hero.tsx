@@ -49,15 +49,14 @@ const Hero = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { isSignedIn } = useUser();
-  const {has}=useAuth();
-  const {userDetail,setUserDetail}=useContext(UserDetailContext);
+  const { has } = useAuth();
+  const { userDetail, setUserDetail } = useContext(UserDetailContext);
 
-  const hasUnlimitedAccess = has&&has({ plan: 'unlimited' })
+  const hasUnlimitedAccess = has && has({ plan: 'unlimited' })
 
   const CreateNewProject = async () => {
 
-    if(!hasUnlimitedAccess && userDetail?.credits!<=0)
-    {
+    if (!hasUnlimitedAccess && userDetail?.credits! <= 0) {
       toast.error('You have no credits left. Please upgrade your plan')
       return;
     }
@@ -76,14 +75,15 @@ const Hero = () => {
         projectId: projectId,
         frameId: frameId,
         messages: messages,
-        credits:userDetail?.credits
+        credits: userDetail?.credits
       });
       console.log(result.data);
       toast.success("Project created!");
       router.push(`/playground/${projectId}?frameId=${frameId}`);
-      setUserDetail((prev:any)=>({
+      setUserDetail((prev: any) => ({
         ...prev,
-        credits:prev?.credits!-1}))
+        credits: prev?.credits! - 1
+      }))
       setLoading(false);
     } catch (error) {
       toast.error("Internal server error");
@@ -120,24 +120,13 @@ const Hero = () => {
           <Button variant="ghost" className="cursor-pointer" disabled={loading}>
             <ImagePlusIcon />
           </Button>
-          {isSignedIn ? (
-            <Button
-              className="cursor-pointer"
-              disabled={!userInput || loading}
-              onClick={CreateNewProject}
-            >
-              {loading ? <Loader className="animate-spin" /> : <ArrowUp />}
-            </Button>
-          ) : (
-            <SignInButton mode="modal" forceRedirectUrl={"/workspace"}>
-              <Button
-                className="cursor-pointer"
-                disabled={!userInput || loading}
-              >
-                <ArrowUp />
-              </Button>
-            </SignInButton>
-          )}
+          <Button
+            className="cursor-pointer"
+            disabled={!userInput || loading}
+            onClick={CreateNewProject}
+          >
+            {loading ? <Loader className="animate-spin" /> : <ArrowUp />}
+          </Button>
         </div>
       </div>
 
