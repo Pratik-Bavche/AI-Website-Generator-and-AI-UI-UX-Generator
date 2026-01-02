@@ -29,9 +29,10 @@ Use a modern design with blue as the primary color theme.
 - All primary components must match the theme color.
 - Add proper padding and margin for each element.
 - Components should be independent; do not connect them.
-- Use placeholders for all images:
-  - Light mode: https://community.softr.io/uploads/db9110/original/2X/7/74e6e7e382d0ff5d7773ca9a87e6f6f8817a68a6.jpeg
-  - Dark mode: https://www.cibaky.com/wp-content/uploads/2015/12/placeholder-3.jpg
+- Use dynamic AI-generated images using Pollinations AI:
+  - Format: https://image.pollinations.ai/prompt/[description]
+  - Example: https://image.pollinations.ai/prompt/business-meeting-office
+  - Ensure the description in the URL matches the context of the image.
   - Add alt tag describing the image prompt.
 - Use the following libraries/components where appropriate:
   - FontAwesome icons (fa fa-)

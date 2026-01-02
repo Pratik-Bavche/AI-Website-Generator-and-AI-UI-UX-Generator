@@ -6,7 +6,7 @@ import Provider from "../app/provider";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
-  title: "AI Website Generator",
+  title: "PromptUX",
   description: "Generate responsive Tailwind websites with AI",
 };
 

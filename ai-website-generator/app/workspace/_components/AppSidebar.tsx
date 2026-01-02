@@ -55,7 +55,7 @@ export function AppSidebar() {
             height={35}
             style={{ height: "auto" }}
           />
-          <h2 className="font-bold text-xl">AI Website Generator</h2>
+          <h2 className="font-bold text-xl">PromptUX</h2>
         </div>
 
         <Link href="/workspace" className="mt-5 w-full">
