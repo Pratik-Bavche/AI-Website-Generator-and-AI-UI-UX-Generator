@@ -2,7 +2,7 @@
 
 AI Website Generator is a full-stack AI-powered creation platform that enables entrepreneurs, designers, developers, and businesses to build complete websites and professional UI/UX designs using natural language — with zero coding required.
 
-The platform now supports two powerful creation modes:
+The platform now supports two powerful creation modes: 
 
 AI Website Generator – Generates production-ready HTML/CSS/Tailwind code
 
